@@ -1,0 +1,3 @@
+/home/naiara/Desktop/Trabalho Fabio/Edificio/CMakeFiles/edit_cache.dir
+/home/naiara/Desktop/Trabalho Fabio/Edificio/CMakeFiles/rebuild_cache.dir
+/home/naiara/Desktop/Trabalho Fabio/Edificio/CMakeFiles/Edificio.dir
