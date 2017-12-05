@@ -1,4 +1,15 @@
 #include <GL/glut.h>
+#include <stdio.h>
+#include <jpeglib.h>
+#include <iostream>
+
+// Qtd máxima de texturas a serem usadas no programa
+#define MAX_NO_TEXTURES 1
+
+#define CUBE_TEXTURE 0
+
+// vetor com os números das texturas
+GLuint texture_id[MAX_NO_TEXTURES];
 
 GLfloat ASPECTO, ANGULO;
 GLfloat obsX, obsY, obsZ, rotX, rotY;
@@ -21,7 +32,8 @@ static bool flagC = false;
 static bool flagK = true;
 
 void init(){
-    glClearColor (0.0, 1.0, 1.0, 0.5);
+    //glClearColor (0.0, 1.0, 1.0, 0.5);
+    glClearColor(0.6f, 0.8f, 1.0f, 1.0f);
     //glMatrixMode (GL_PROJECTION);
     //glLoadIdentity ();
     //glOrtho(-40.0, 40.0, -40.0, 40.0, -40.0, 40.0);
@@ -191,9 +203,10 @@ void displayCube(int i){
 
     //fundo
     glPushMatrix();
-    glColor3f(1.0, 0.0, 0.0);
+    glColor3f(0.43, 0.21, 0.1);
     glTranslated(-2,-2,0);
     glBegin(GL_POLYGON);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3f(0.0,0.0 + (ALTURA * i),-4.0);
     glVertex3f(0.0,4.0 + (ALTURA * i),-4.0);
     glVertex3f(4.0,4.0 + (ALTURA * i),-4.0);
@@ -203,40 +216,47 @@ void displayCube(int i){
 
     //janela
     glPushMatrix();
-    glColor3f(1.0, 0.0, 1.0);
+    glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor4f(0.7,0.7,1.0, 0.7);
+    //glColor4f(1.0, 0.0, 1.0,0.7);
     glTranslated(-2,-2,0);
     glBegin(GL_POLYGON);
-    glVertex3f(0.5,2.0 + (ALTURA * i),0.1);
-    glVertex3f(0.5,3.0 + (ALTURA * i),0.1);
-    glVertex3f(3.5,3.0 + (ALTURA * i),0.1);
-    glVertex3f(3.5,2.0 + (ALTURA * i),0.1);
+    glVertex3f(0.5,2.0 + (ALTURA * i),0.01);
+    glVertex3f(0.5,3.0 + (ALTURA * i),0.01);
+    glVertex3f(3.5,3.0 + (ALTURA * i),0.01);
+    glVertex3f(3.5,2.0 + (ALTURA * i),0.01);
     glEnd();
     glPopMatrix();
 
     //linha da porta
     glPushMatrix();
-    glColor3f(1.0, 1.0, 0.0);
+    glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor4f(1.0,1.0,0.0, 0.2);
     glTranslated(-2,-2,0);
     glBegin(GL_LINES);
-    glVertex3f(2.0, 0.0 + (ALTURA * i), 0.2);
-    glVertex3f(2.0, 1.0 + (ALTURA * i), 0.2);
+    glVertex3f(2.0, 0.0 + (ALTURA * i), 0.02);
+    glVertex3f(2.0, 1.0 + (ALTURA * i), 0.02);
     glEnd();
     glPopMatrix();
 
     //linha da janela vertical
     glPushMatrix();
-    glColor3f(0.0, 0.0, 0.0);
+    glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glColor4f(0.0, 0.0, 0.0, 0.2);
     glTranslated(-2,-2,0);
     glBegin(GL_LINES);
-    glVertex3f(2.0, 2.0 + (ALTURA * i), 0.2);
-    glVertex3f(2.0, 3.0 + (ALTURA * i), 0.2);
+    glVertex3f(2.0, 2.0 + (ALTURA * i), 0.02);
+    glVertex3f(2.0, 3.0 + (ALTURA * i), 0.02);
     glEnd();
     glPopMatrix();
 
     if (i != 0) {
         //sacada chão
         glPushMatrix();
-        glColor3f(1.0, 1.0, 0.0);
+        glColor3f(0.86, 0.86, 0.86);
         glTranslated(-2,-2,0);
         glBegin(GL_POLYGON);
         glVertex3f(0.0,0.0 + (ALTURA * i),0.0);
@@ -261,7 +281,9 @@ void displayCube(int i){
 
         //lateral sacada
         glPushMatrix();
-        glColor3f(0.0, 0.0, 1.0);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor4f(0.7,0.7,1.0, 0.7);
         glTranslated(-2,-2,0);
         glBegin(GL_POLYGON);
         glVertex3f(0.0,0.5 + (ALTURA * i),1.0);
@@ -273,7 +295,9 @@ void displayCube(int i){
 
         //lateral sacada
         glPushMatrix();
-        glColor3f(0.0, 0.0, 1.0);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor4f(0.7,0.7,1.0, 0.7);
         glTranslated(-2,-2,0);
         glBegin(GL_POLYGON);
         glVertex3f(4.0,0.5 + (ALTURA * i),1.0);
@@ -286,29 +310,33 @@ void displayCube(int i){
 
     //linha da janela horizontal
     glPushMatrix();
-    glColor3f(0.0, 0.0, 0.0);
+     glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glColor4f(0.0, 0.0, 0.0, 0.2);
     glTranslated(-2,-2,0);
     glBegin(GL_LINES);
-    glVertex3f(0.5, 2.5 + (ALTURA * i), 0.2);
-    glVertex3f(3.5, 2.5 + (ALTURA * i), 0.2);
+    glVertex3f(0.5, 2.5 + (ALTURA * i), 0.02);
+    glVertex3f(3.5, 2.5 + (ALTURA * i), 0.02);
     glEnd();
     glPopMatrix();
 
     //porta
     glPushMatrix();
-    glColor3f(1.0, 1.0, 1.0);
+    glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor4f(0.0,0.0,0.0, 0.3);
     glTranslated(-2,-2,0);
     glBegin(GL_POLYGON);
-    glVertex3f(1.5,0.0 + (ALTURA * i),0.1);
-    glVertex3f(1.5,1.0 + (ALTURA * i),0.1);
-    glVertex3f(2.5,1.0 + (ALTURA * i),0.1);
-    glVertex3f(2.5,0.0 + (ALTURA * i),0.1);
+    glVertex3f(1.5,0.0 + (ALTURA * i),0.01);
+    glVertex3f(1.5,1.0 + (ALTURA * i),0.01);
+    glVertex3f(2.5,1.0 + (ALTURA * i),0.01);
+    glVertex3f(2.5,0.0 + (ALTURA * i),0.01);
     glEnd();
     glPopMatrix();
 
     //frente
     glPushMatrix();
-    glColor3f(1.0, 0.0, 0.0);
+    glColor3f(0.43, 0.21, 0.1);
     glTranslated(-2,-2,0);
     glBegin(GL_POLYGON);
     glVertex3f(0.0,0.0 + (ALTURA * i),0.0);
@@ -322,7 +350,7 @@ void displayCube(int i){
 
     //base
     glPushMatrix();
-    glColor3f(1.0, 0.0, 0.0);
+    glColor3f(0.43, 0.21, 0.1);
     glTranslated(-2,-2,0);
     glBegin(GL_POLYGON);
     glVertex3f(0.0,0.0 + (ALTURA * i),0.0);
@@ -346,7 +374,7 @@ void displayCube(int i){
 
     //lateral esquerda
     glPushMatrix();
-    glColor3f(1.0, 0.0, 0.0);
+    glColor3f(0.43, 0.21, 0.1);
     glTranslated(-2,-2,0);
     glBegin(GL_POLYGON);
     glVertex3f(0.0,4.0 + (ALTURA * i),-4.0);
@@ -358,7 +386,7 @@ void displayCube(int i){
 
     //lateral direita
     glPushMatrix();
-    glColor3f(1.0, 0.0, 0.0);
+    glColor3f(0.43, 0.21, 0.1);
     glTranslated(-2,-2,0);
     glBegin(GL_POLYGON);
     glVertex3f(4.0,4.0 + (ALTURA * i),-4.0);
@@ -376,7 +404,7 @@ void display(void){
 
     //chão
     glPushMatrix();
-    glColor3f(0.647059, 0.164706, 0.164706);
+    glColor3f(0.3,0.6,0.0);
     glTranslated(-2,-2,0);
     glBegin(GL_POLYGON);
     glVertex3f(-1000.0,-0.000001,1000.0);
