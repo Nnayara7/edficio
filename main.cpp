@@ -307,7 +307,6 @@ void displayCube(int i){
         glEnd();
         glPopMatrix();
     }
-
     //linha da janela horizontal
     glPushMatrix();
      glEnable(GL_BLEND);
